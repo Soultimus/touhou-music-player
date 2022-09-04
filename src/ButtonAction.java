@@ -1,4 +1,4 @@
-import java.beans.EventHandler;
+// TODO: FIX JSON FILE BECAUSE SOME EXTRA SONGS ARE AFTER THE CREDITS SONGS
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -25,6 +25,9 @@ public class ButtonAction {
         this.songId = songId;
     }
 
+    /**
+     * Assign specified song to button
+     */
     public void assignMusic() {
         b.setOnAction(e -> {
             if (t != null && t.isAlive()) {
@@ -43,32 +46,41 @@ public class ButtonAction {
         });
     }
 
+    /**
+     * Stop song that is currently playing
+     */
     public void stopMusic() {
         b.setOnAction(e -> {
             try {
                 if (t.isAlive()) {
                     m.getLineIn().stop();
                 }
-            } catch (NullPointerException err) {
+            } 
+            catch (NullPointerException err) {
                 System.out.println("The app tried to pause music despite not having anything to pause");
             }
         });
     }
 
+    /**
+     * Read the dirs.dat file to get the game's path for information
+     * @return Game path based on constructor gameId parameter
+     */
     private String filterGamePath() {
         String id = gameId < 10 ? "dir0" + gameId : "dir" + gameId;
         String path = null;
         try {
-            List<String> allDirs = Files.readAllLines(Paths.get("info/directories.dat"));
+            List<String> allDirs = Files.readAllLines(Paths.get("info/dirs.dat"));
             for (int i = 0; i < allDirs.size(); i++) {
                 if (allDirs.get(i).contains(id)) {
                     path = allDirs.get(i).substring(6);
                 }
             }
-        } catch (IOException e) { // TODO: Make an error when an id block is missing!
+        }
+        catch (IOException e) {
             Alert alert = new Alert(
                     AlertType.WARNING,
-                    "Unable to find thbgm files in set directory",
+                    "Directory not found. You might have not set it",
                     ButtonType.OK);
             alert.showAndWait();
         }
@@ -78,12 +90,21 @@ public class ButtonAction {
         return path;
     }
 
+    /**
+     * Retrive thbgm file of specified extension (.fmt or .dat)
+     * @param ext File extension to look up (.fmt or .dat)
+     * @return FMT or PCM thbgm file
+     */
     private File findInfoFile(String ext) {
         if (gameId < 7) {
             throw new IllegalArgumentException(
                     "The application attempted to find a thbgm.dat file in a game before PCB");
         }
         return new File(this.filterGamePath() + "/thbgm" + ext);
+    }
+
+    private void saveLastPlayed() {
+
     }
 
 }
