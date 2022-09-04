@@ -9,20 +9,35 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.text.Text;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.Stage;
 
 public class ButtonAction {
 
     private Button b;
     private int gameId;
     private int songId;
+    private Stage s;
+    private Text text;
 
     private static Thread t;
     private static MusicHandler m;
 
-    public ButtonAction(Button b, int gameId, int songId) {
+    public ButtonAction(Button b) {
         this.b = b;
+    }
+
+    public ButtonAction(Button b, int gameId, Stage s) {
+        this(b);
+        this.gameId = gameId;
+    }
+
+    public ButtonAction(Button b, int gameId, int songId, Text text) {
+        this(b);
         this.gameId = gameId;
         this.songId = songId;
+        this.text = text;
     }
 
     /**
@@ -43,6 +58,7 @@ public class ButtonAction {
             t = new Thread(() -> m.playTrack());
             t.setDaemon(true);
             t.start();
+            text.setText("Now playing: " + b.getText());
         });
     }
 
@@ -61,6 +77,29 @@ public class ButtonAction {
             }
         });
     }
+
+    /**
+     * Save the directory of the game
+     */
+    public void assignDirectory() {
+        b.setOnAction(e -> {
+            DirectoryChooser c = new DirectoryChooser();
+            c.setTitle("Select the directory where Touhou " + (gameId + 6) + " is located");
+            c.setInitialDirectory(new File("."));
+            File dir = c.showDialog(s);
+            try {
+                this.saveDirectory(dir, gameId);
+                // assignGameExecutable();
+            }
+            catch (IOException err) {
+                err.printStackTrace();
+            }
+            catch (NullPointerException err) {}
+        });
+    }
+
+
+    ///#region Private methods
 
     /**
      * Read the dirs.dat file to get the game's path for information
@@ -103,8 +142,22 @@ public class ButtonAction {
         return new File(this.filterGamePath() + "/thbgm" + ext);
     }
 
-    private void saveLastPlayed() {
+    /**
+     * Save game directory to dirs.dat
+     * @param file 
+     * @param gameId The game's number
+     * @throws IOException
+     */
+    private void saveDirectory(File file, int gameId) throws IOException {
+        String id = gameId < 10 ? "dir0" + gameId + ":" : "dir" + gameId + ":";
+        String directoryPath = "info/dirs.dat";
 
+        // Replace whatever was on the corresponding line
+        List<String> lines = Files.readAllLines(Paths.get(directoryPath));
+        lines.set(gameId - 6, id + file.getAbsolutePath().replace('\\', '/'));
+        Files.write(Paths.get(directoryPath), lines);
     }
+
+    ///#endregion Private Methods
 
 }

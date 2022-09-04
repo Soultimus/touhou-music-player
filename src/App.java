@@ -15,8 +15,12 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class App extends Application {
@@ -49,11 +53,14 @@ public class App extends Application {
         cb.getItems().addAll(games);
         cb.setValue(lastInfo[0]);
         int gameId = Integer.parseInt(lastInfo[1]);
+        bp.setRight(createRight(cb, stage));
+        Text playingText = new Text("");
+        bp.setTop(playingText);
 
         JSONParser parser = new JSONParser();
         JSONArray allTracks = (JSONArray)parser.parse(new FileReader("info/songNamesEn.json"));
         JSONArray songs = (JSONArray)parser.parse(allTracks.get(gameId).toString());
-        sp = displaySongs(songs, gameId);
+        sp = displaySongs(songs, gameId, playingText);
         // I hate doing this, but there's no way to change the ScrollPane like I want to in an instance method...
         ScrollPane[] jankSp = new ScrollPane[1];
         cb.valueProperty().addListener(e -> {
@@ -61,7 +68,7 @@ public class App extends Application {
             value++;
             String gameName = cb.getSelectionModel().getSelectedItem();
             try {
-                jankSp[0] = displaySongs((JSONArray)parser.parse(allTracks.get(value).toString()), value);
+                jankSp[0] = displaySongs((JSONArray)parser.parse(allTracks.get(value).toString()), value, playingText);
                 writeToLast(gameName, value);
             }
             catch (ParseException err) {
@@ -70,18 +77,16 @@ public class App extends Application {
             bp.setLeft(jankSp[0]);
         });
         bp.setLeft(sp);
-        bp.setRight(cb);
-
 
         Scene scene = new Scene(bp, 1030, 625);
         // scene.getStylesheets().add("file:styles/main.css");
         stage.setTitle("Touhou Music Player");
         stage.setScene(scene);
-        // stage.getIcons().add(new Image("file:images/marysue.png"));
+        stage.getIcons().add(new Image("file:images/marysue.png"));
         stage.show();
     }
 
-    private static ScrollPane displaySongs(JSONArray songs, int gameId) {
+    private static ScrollPane displaySongs(JSONArray songs, int gameId, Text t) {
         VBox songBox = new VBox();
 
         Iterator<JSONArray> it = songs.iterator();
@@ -94,13 +99,40 @@ public class App extends Application {
         for (int i = 0; i < songNames.size(); i++) {
             Button b = new Button(songNames.get(i).toString());
             b.setFocusTraversable(false);
-            ba = new ButtonAction(b, gameId + 6, i);
+            ba = new ButtonAction(b, gameId + 6, i, t);
             ba.assignMusic();
             songBox.getChildren().add(b);
         }
 
         ScrollPane sp = new ScrollPane(songBox);
         return sp;
+    }
+
+    private VBox createRight(ComboBox<String> cb, Stage s) {
+        VBox rightBox = new VBox();
+        int gameId = cb.getSelectionModel().getSelectedIndex();
+        ImageView v = new ImageView(new Image("file:images/th" + (gameId + 7) + "cover.jpg"));
+        v.setFitHeight(400);
+        v.setFitWidth(400);
+
+        Button stopButton = new Button("■");
+        ButtonAction ba = new ButtonAction(stopButton);
+        ba.stopMusic();
+
+        Button setDirButton = new Button("Set Directory");
+        ba = new ButtonAction(setDirButton, gameId + 1, s);
+        ba.assignDirectory();
+        ButtonAction[] barr = new ButtonAction[1];
+        barr[0] = ba;
+        cb.valueProperty().addListener(e -> {
+            barr[0] = new ButtonAction(setDirButton, cb.getSelectionModel().getSelectedIndex() + 1, s);
+            barr[0].assignDirectory();
+            v.setImage(new Image("file:images/th" + (cb.getSelectionModel().getSelectedIndex() + 7) + "cover.jpg"));        
+        });
+        
+        HBox buttonBox = new HBox(stopButton, setDirButton);
+        rightBox.getChildren().addAll(cb, buttonBox, v);
+        return rightBox;
     }
 
     /**
