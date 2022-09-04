@@ -1,0 +1,151 @@
+.combo-box .list-cell {
+    -fx-background: #202935;
+    -fx-text-fill: whitesmoke;
+    -fx-padding: 10;
+    -fx-cell-size: 3em;
+    -fx-font: bold 12pt fantasy;
+}
+
+.combo-box .arrow {
+    -fx-background-color: whitesmoke;
+}
+
+.combo-box-popup .list-view {
+    -fx-background-color: #283242;
+    -fx-border-color: #283242;
+}
+
+.combo-box-popup .list-view:hover {
+    -fx-background-color: #3f4e64;
+    -fx-border-color: #3f4e64;
+}
+
+.combo-box-popup .list-view .list-cell {
+    -fx-border-color: #283242;
+}
+
+.combo-box-popup .list-view .list-cell:filled:hover {
+    -fx-background-color: #3f4e64;
+    -fx-cursor: hand;
+}
+
+.combo-box-popup .list-view .list-cell:filled:pressed {
+    -fx-background-color: #50627e;
+    -fx-cursor: hand;
+}
+
+.combo-box-base {
+    -fx-background-color: #202935;
+    -fx-background-insets: 0 0 -1 0, 0, 1, 2;
+    -fx-background-radius: 3px, 3px, 2px, 1px;
+    -fx-padding: 0.333333em 0.666667em 0.333333em 0.666667em;
+    -fx-text-fill: whitesmoke;
+    -fx-alignment: CENTER;
+    -fx-content-display: LEFT;
+    -fx-cursor: hand;
+}
+
+.combo-box-base:hover {
+    -fx-background: #3f4e64;
+    -fx-background-color: #3f4e64;
+}
+
+.combo-box-base:pressed {
+    -fx-background: #50627e;
+    -fx-background-color: #50627e;
+}
+
+.combo-box-base:showing {
+    -fx-color: #3f4e64;
+}
+
+.root {
+    -fx-background-color: #283242;
+}
+
+.scroll-pane {
+    -fx-background: #283242;
+    -fx-border-color: #283242;
+    -fx-background-color:transparent;   
+}
+
+#dir-button {
+    -fx-background-color: #202935;
+    -fx-cursor: hand;
+    -fx-font: bold 15pt fantasy;
+    -fx-text-fill: whitesmoke;
+    -fx-pref-width: 243.5px;
+    -fx-padding: 15px;
+    -fx-background-insets: 7px;
+    -fx-border-insets: 7px;
+}
+
+#dir-button:hover {
+    -fx-background-color: #3f4e64;
+    -fx-cursor: hand;
+    -fx-text-fill: whitesmoke;
+}
+
+#dir-button:pressed {
+    -fx-background-color: #50627e;
+    -fx-cursor: hand;
+    -fx-text-fill: whitesmoke;
+}
+
+#playing-box {
+    -fx-padding: 2.5px;
+}
+
+#playing {
+    -fx-fill: whitesmoke;
+    -fx-font: bold 25pt fantasy;
+}
+
+#right-box {
+    -fx-padding: 0 10 0 0;
+    -fx-spacing: 7;
+}
+
+#stop-button {
+    -fx-background-color: #202935;
+    -fx-cursor: hand;
+    -fx-font: bold 15pt fantasy;
+    -fx-text-fill: whitesmoke;
+    -fx-pref-width: 65px;
+    -fx-padding: 15px;
+    -fx-border-insets: 5px;
+}
+
+#stop-button:hover {
+    -fx-background-color: #3f4e64;
+    -fx-cursor: hand;
+    -fx-text-fill: whitesmoke;
+}
+
+#stop-button:pressed {
+    -fx-background-color: #50627e;
+    -fx-cursor: hand;
+    -fx-text-fill: whitesmoke;
+}
+
+#track-button {
+    -fx-background-color: #202935;
+    -fx-background-insets: 2px;
+    -fx-border-insets: 2px;
+    -fx-font: bold 14pt fantasy;
+    -fx-padding: 7.5px;
+    -fx-pref-width: 625px;
+    -fx-text-fill: whitesmoke;
+}
+
+#track-button:hover {
+    -fx-background-color: #3f4e64;
+    -fx-cursor: hand;
+    -fx-text-fill: whitesmoke;
+}
+
+#track-button:pressed {
+    -fx-background-color: #50627e;
+    -fx-cursor: hand;
+    -fx-text-fill: whitesmoke;
+}

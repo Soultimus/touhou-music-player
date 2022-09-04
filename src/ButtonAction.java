@@ -58,6 +58,12 @@ public class ButtonAction {
             t = new Thread(() -> m.playTrack());
             t.setDaemon(true);
             t.start();
+            if (b.getText().length() > 40) {
+                text.setStyle("-fx-font: bold 18pt fantasy;");
+            }
+            else {
+                text.setStyle("-fx-font: bold 25pt fantasy;");
+            }
             text.setText("Now playing: " + b.getText());
         });
     }
@@ -70,6 +76,7 @@ public class ButtonAction {
             try {
                 if (t.isAlive()) {
                     m.getLineIn().stop();
+                    text.setText("Touhou Music Player");
                 }
             } 
             catch (NullPointerException err) {

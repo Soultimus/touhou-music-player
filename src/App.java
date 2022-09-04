@@ -11,6 +11,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import javafx.application.Application;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -54,21 +55,33 @@ public class App extends Application {
         cb.setValue(lastInfo[0]);
         int gameId = Integer.parseInt(lastInfo[1]);
         bp.setRight(createRight(cb, stage));
-        Text playingText = new Text("");
-        bp.setTop(playingText);
+        Text playingText = new Text("Touhou Music Player");
+        playingText.setId("playing");
+        HBox playingBox = new HBox(playingText);
+        playingBox.setAlignment(Pos.BASELINE_CENTER);
+        playingBox.setId("playing-box");
+        playingBox.setMinHeight(50);
+        bp.setTop(playingBox);
 
         JSONParser parser = new JSONParser();
         JSONArray allTracks = (JSONArray)parser.parse(new FileReader("info/songNamesEn.json"));
         JSONArray songs = (JSONArray)parser.parse(allTracks.get(gameId).toString());
         sp = displaySongs(songs, gameId, playingText);
+        sp.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        sp.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        sp.setFitToWidth(true);
         // I hate doing this, but there's no way to change the ScrollPane like I want to in an instance method...
         ScrollPane[] jankSp = new ScrollPane[1];
+        jankSp[0] = sp;
         cb.valueProperty().addListener(e -> {
             int value = cb.getSelectionModel().getSelectedIndex();
             value++;
             String gameName = cb.getSelectionModel().getSelectedItem();
             try {
                 jankSp[0] = displaySongs((JSONArray)parser.parse(allTracks.get(value).toString()), value, playingText);
+                jankSp[0].setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+                jankSp[0].setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+                jankSp[0].setFitToWidth(true);
                 writeToLast(gameName, value);
             }
             catch (ParseException err) {
@@ -79,7 +92,7 @@ public class App extends Application {
         bp.setLeft(sp);
 
         Scene scene = new Scene(bp, 1030, 625);
-        // scene.getStylesheets().add("file:styles/main.css");
+        scene.getStylesheets().add("file:styles/style.css");
         stage.setTitle("Touhou Music Player");
         stage.setScene(scene);
         stage.getIcons().add(new Image("file:images/marysue.png"));
@@ -99,6 +112,7 @@ public class App extends Application {
         for (int i = 0; i < songNames.size(); i++) {
             Button b = new Button(songNames.get(i).toString());
             b.setFocusTraversable(false);
+            b.setId("track-button");
             ba = new ButtonAction(b, gameId + 6, i, t);
             ba.assignMusic();
             songBox.getChildren().add(b);
@@ -110,16 +124,19 @@ public class App extends Application {
 
     private VBox createRight(ComboBox<String> cb, Stage s) {
         VBox rightBox = new VBox();
+        rightBox.setId("right-box");
         int gameId = cb.getSelectionModel().getSelectedIndex();
         ImageView v = new ImageView(new Image("file:images/th" + (gameId + 7) + "cover.jpg"));
-        v.setFitHeight(400);
-        v.setFitWidth(400);
+        v.setFitHeight(375);
+        v.setFitWidth(375);
 
         Button stopButton = new Button("■");
+        stopButton.setId("stop-button");
         ButtonAction ba = new ButtonAction(stopButton);
         ba.stopMusic();
 
         Button setDirButton = new Button("Set Directory");
+        setDirButton.setId("dir-button");
         ba = new ButtonAction(setDirButton, gameId + 1, s);
         ba.assignDirectory();
         ButtonAction[] barr = new ButtonAction[1];
