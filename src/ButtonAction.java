@@ -51,14 +51,30 @@ public class ButtonAction {
             }
 
             MusicInfo tm = new MusicInfo(
-                    this.findInfoFile(".dat"),
-                    this.findInfoFile(".fmt"),
-                    songId);
-            m = new MusicHandler(tm);
+                this.findInfoFile(".dat"),
+                this.findInfoFile(".fmt"),
+                songId
+            );
+
+            String trackName = b.getText();
+            // Ten Desires Trance tracks check
+            if (gameId == 13) {
+                if (trackName.substring(trackName.length() - 1).equals(")")) {
+                    m = new MusicHandler(tm, true);
+                }
+                else {
+                    m = new MusicHandler(tm, false);
+                }
+            }
+            else {
+                m = new MusicHandler(tm);
+            }
+
+
             t = new Thread(() -> m.playTrack());
             t.setDaemon(true);
             t.start();
-            if (b.getText().length() > 40) {
+            if (trackName.length() > 40) {
                 text.setStyle("-fx-font: bold 18pt fantasy;");
             }
             else {

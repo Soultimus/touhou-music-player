@@ -24,14 +24,25 @@ public class MusicHandler {
     private FileInputStream fis;
 
     private MusicInfo tm;
+    private int sampleRate;
 
     public MusicHandler(MusicInfo tm) {
         this.tm = tm;
+        sampleRate = 44100;
+    }
+    public MusicHandler(MusicInfo tm, boolean trance) {
+        this(tm);
+        if (trance) {
+            sampleRate = 22050;
+        }
+        else {
+            sampleRate = 44100;
+        }
     }
 
     public void playTrack() {
         try {
-            wav = new AudioFormat(44100, 16, 2, true, false);
+            wav = new AudioFormat(sampleRate, 16, 2, true, false);
             info = new DataLine.Info(SourceDataLine.class, wav);
 
             numBytesToRead = tm.getFmt().getTotalLength();
@@ -69,8 +80,11 @@ public class MusicHandler {
 
 
             lineIn.start();
+            // Get thbgm.dat file (PCM Data)
             fis = new FileInputStream(tm.getPcmFile());
+            // Skip to selected song
             fis.skip(tm.getFmt().getStartOffset());
+            // Determine when the song stops
             totalToRead = tm.getFmt().getTotalLength();
 
             while (total < totalToRead) {

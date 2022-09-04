@@ -1,0 +1,4 @@
+- Loop song
+- Fix stopping
+- Make icon
+- Make README
