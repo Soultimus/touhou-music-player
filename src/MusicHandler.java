@@ -86,11 +86,9 @@ public class MusicHandler {
             // Skip to selected song
             fis.skip(tm.getFmt().getStartOffset());
             // Determine when the song stops
-            // System.out.println(tm.getFmt().getStartOffset());
-            // tm.getNextStartOffset();
-            // System.out.println(tm.getFmt().getStartOffset() - tm.getNextStartOffset());
             totalToRead = tm.getFmt().getTotalLength();
 
+            // Play the first portion of the song
             while (total < totalToRead) {
                 numBytesRead = fis.read(buffer, 0, numBytesToRead);
                 if (numBytesRead == -1) break;
@@ -98,12 +96,17 @@ public class MusicHandler {
                 lineIn.write(buffer, 0, numBytesRead);
             }
 
-            // numBytesToRead = tm.getFmt().getTotalLength() - tm.getNextIntroLength();
+            // Reset the buffer and numBytesToRead to the length of the song without the intro
+            numBytesToRead = tm.getFmt().getTotalLength() - tm.getFmt().getIntroLength();
+            buffer = new byte[numBytesToRead];
+            numBytesRead = 0;
 
+            // Loop the song indefinitely until the stop button is pressed
             while (true) {
                 fis = new FileInputStream(tm.getPcmFile());
                 fis.skip(tm.getFmt().getStartOffset() + tm.getFmt().getIntroLength());
                 numBytesRead = fis.read(buffer, 0, numBytesToRead);
+                if (numBytesRead == -1) break;
                 lineIn.write(buffer, 0, numBytesRead);
             }
 

@@ -7,9 +7,7 @@ public class MusicInfo {
     private static final int FMT_SONG_LENGTH = 52;
     private File pcmFile;
     private byte[] pcm;
-    private File fmtFile;
     private MusicFMTData fmt;
-    private int index;
 
     public MusicInfo(File pcm, File fmt, int index) {
         // Load fmt data
@@ -18,8 +16,6 @@ public class MusicInfo {
             raf.skipBytes(index * FMT_SONG_LENGTH);
             raf.read(fmtBytes, 0, FMT_SONG_LENGTH);
             this.fmt = new MusicFMTData(fmtBytes);
-            fmtFile = fmt;
-            this.index = index;
         } 
         catch (IOException e) {
             throw new IllegalArgumentException("Invalid FMT file");
@@ -33,19 +29,6 @@ public class MusicInfo {
             throw new IllegalArgumentException("Invalid PCM file");
         }
         this.pcmFile = pcm;
-    }
-
-    public int getNextIntroLength() {
-        try (RandomAccessFile raf = new RandomAccessFile(fmtFile, "r")) {
-            byte[] fmtBytes = new byte[FMT_SONG_LENGTH];
-            raf.skipBytes((index + 1) * FMT_SONG_LENGTH);
-            raf.read(fmtBytes, 0, FMT_SONG_LENGTH);
-            this.fmt = new MusicFMTData(fmtBytes);
-        } 
-        catch (IOException e) {
-            throw new IllegalArgumentException("Invalid FMT file");
-        }
-        return fmt.getIntroLength();
     }
 
 
