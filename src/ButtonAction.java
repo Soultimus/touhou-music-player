@@ -11,7 +11,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Alert.AlertType;
 
 public class ButtonAction {
-    
+
     private Button b;
     private int gameId;
     private int songId;
@@ -27,24 +27,32 @@ public class ButtonAction {
 
     public void assignMusic() {
         b.setOnAction(e -> {
-                if (t != null && t.isAlive()) {
-                    t.interrupt();
+            if (t != null && t.isAlive()) {
+                t.interrupt();
+                m.getLineIn().stop();
+            }
+
+            MusicInfo tm = new MusicInfo(
+                    this.findInfoFile(".dat"),
+                    this.findInfoFile(".fmt"),
+                    songId);
+            m = new MusicHandler(tm);
+            t = new Thread(() -> m.playTrack());
+            t.setDaemon(true);
+            t.start();
+        });
+    }
+
+    public void stopMusic() {
+        b.setOnAction(e -> {
+            try {
+                if (t.isAlive()) {
                     m.getLineIn().stop();
                 }
-
-                MusicInfo tm = new MusicInfo(
-                    this.findInfoFile(".dat"), 
-                    this.findInfoFile(".fmt"),
-                    songId
-                );
-                m = new MusicHandler(tm);
-                t = new Thread(() -> 
-                    m.playTrack()
-                );
-                t.setDaemon(true);
-                t.start();
+            } catch (NullPointerException err) {
+                System.out.println("The app tried to pause music despite not having anything to pause");
             }
-        );
+        });
     }
 
     private String filterGamePath() {
@@ -57,13 +65,11 @@ public class ButtonAction {
                     path = allDirs.get(i).substring(6);
                 }
             }
-        }
-        catch (IOException e) { // TODO: Make an error when an id block is missing!
+        } catch (IOException e) { // TODO: Make an error when an id block is missing!
             Alert alert = new Alert(
-                AlertType.WARNING, 
-                "Unable to find thbgm files in set directory", 
-                ButtonType.OK
-            );
+                    AlertType.WARNING,
+                    "Unable to find thbgm files in set directory",
+                    ButtonType.OK);
             alert.showAndWait();
         }
         if (path.length() == 0) {
@@ -71,9 +77,13 @@ public class ButtonAction {
         }
         return path;
     }
-        
-    private File findInfoFile (String ext) {
-        return null;
+
+    private File findInfoFile(String ext) {
+        if (gameId < 7) {
+            throw new IllegalArgumentException(
+                    "The application attempted to find a thbgm.dat file in a game before PCB");
+        }
+        return new File(this.filterGamePath() + "/thbgm" + ext);
     }
-    
+
 }

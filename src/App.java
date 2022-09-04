@@ -44,7 +44,8 @@ public class App extends Application {
 
         JSONParser parser = new JSONParser();
         JSONArray allTracks = (JSONArray)parser.parse(new FileReader("info/songNamesEn.json"));
-        displaySongs((JSONArray)parser.parse(allTracks.get(4).toString())); // same default, to change later
+        ScrollPane sp = displaySongs((JSONArray)parser.parse(allTracks.get(4).toString()), 4); // same default, to change later
+        bp.setLeft(sp);
 
 
         Scene scene = new Scene(bp, 1030, 625);
@@ -55,7 +56,7 @@ public class App extends Application {
         stage.show();
     }
 
-    private static ScrollPane displaySongs(JSONArray songs) {
+    private static ScrollPane displaySongs(JSONArray songs, int gameId) {
         VBox songBox = new VBox();
 
         Iterator<JSONArray> it = songs.iterator();
@@ -64,9 +65,11 @@ public class App extends Application {
             songNames.add(it.next());
         }
 
+        ButtonAction ba = null;
         for (int i = 0; i < songNames.size(); i++) {
             Button b = new Button(songNames.get(i).toString());
             b.setFocusTraversable(false);
+            ba = new ButtonAction(b, gameId, i);
             songBox.getChildren().add(b);
         }
 
