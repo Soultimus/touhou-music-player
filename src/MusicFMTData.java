@@ -30,7 +30,7 @@ public class MusicFMTData {
             this.fmtHeader = is.readNBytes(18);
         }
         catch (IOException e) {
-            throw new IllegalArgumentException("Invalid byte array"); 
+            throw new IllegalArgumentException("Invalid byte array");
         }
     }
 

@@ -32,6 +32,7 @@ public class MusicHandler {
     }
     public MusicHandler(MusicInfo tm, boolean trance) {
         this(tm);
+        // In Ten Desires, going into Trance mode plays unique songs that have half the sample rate of the normal songs
         if (trance) {
             sampleRate = 22050;
         }
@@ -85,12 +86,24 @@ public class MusicHandler {
             // Skip to selected song
             fis.skip(tm.getFmt().getStartOffset());
             // Determine when the song stops
+            // System.out.println(tm.getFmt().getStartOffset());
+            // tm.getNextStartOffset();
+            // System.out.println(tm.getFmt().getStartOffset() - tm.getNextStartOffset());
             totalToRead = tm.getFmt().getTotalLength();
 
             while (total < totalToRead) {
                 numBytesRead = fis.read(buffer, 0, numBytesToRead);
                 if (numBytesRead == -1) break;
                 total += numBytesRead;
+                lineIn.write(buffer, 0, numBytesRead);
+            }
+
+            // numBytesToRead = tm.getFmt().getTotalLength() - tm.getNextIntroLength();
+
+            while (true) {
+                fis = new FileInputStream(tm.getPcmFile());
+                fis.skip(tm.getFmt().getStartOffset() + tm.getFmt().getIntroLength());
+                numBytesRead = fis.read(buffer, 0, numBytesToRead);
                 lineIn.write(buffer, 0, numBytesRead);
             }
 
