@@ -46,4 +46,4 @@ Have fun listening! I'm quite proud that this is my first personal project, so I
 - My friend ***NeNikitov***, for helping me code the `MusicFMTData` file and explaining to me how to read bytes and make use of them. Check his awesome stuff out [here](https://github.com/nenikitov)
 - ***Michael Beeuwsaert***, for creating a [DataInputStream file with Endian support](https://gist.github.com/MichaelBeeu/6545110). It greatly helped with byte reading
 - ***The Touhou Wiki***, for their article on Touhou BGM files
-- **ZUN**, for creating Touhou Project and making music so damn good it made me want to code an entire app on my own accord just to play it
+- ***ZUN***, for creating Touhou Project and making music so damn good it made me want to code an entire app on my own accord just to play it

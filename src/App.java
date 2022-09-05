@@ -54,9 +54,9 @@ public class App extends Application {
         cb.getItems().addAll(games);
         cb.setValue(lastInfo[0]);
         int gameId = Integer.parseInt(lastInfo[1]);
-        bp.setRight(createRight(cb, stage));
         Text playingText = new Text("Touhou Music Player");
         playingText.setId("playing");
+        bp.setRight(createRight(cb, stage, playingText));
         HBox playingBox = new HBox(playingText);
         playingBox.setAlignment(Pos.BASELINE_CENTER);
         playingBox.setId("playing-box");
@@ -113,7 +113,7 @@ public class App extends Application {
             Button b = new Button(songNames.get(i).toString());
             b.setFocusTraversable(false);
             b.setId("track-button");
-            ba = new ButtonAction(b, gameId + 6, i, t);
+            ba = new ButtonAction(b, gameId + 6, t, i);
             ba.assignMusic();
             songBox.getChildren().add(b);
         }
@@ -122,7 +122,7 @@ public class App extends Application {
         return sp;
     }
 
-    private VBox createRight(ComboBox<String> cb, Stage s) {
+    private VBox createRight(ComboBox<String> cb, Stage s, Text t) {
         VBox rightBox = new VBox();
         rightBox.setId("right-box");
         int gameId = cb.getSelectionModel().getSelectedIndex();
@@ -132,7 +132,7 @@ public class App extends Application {
 
         Button stopButton = new Button("■");
         stopButton.setId("stop-button");
-        ButtonAction ba = new ButtonAction(stopButton);
+        ButtonAction ba = new ButtonAction(stopButton, t);
         ba.stopMusic();
 
         Button setDirButton = new Button("Set Directory");

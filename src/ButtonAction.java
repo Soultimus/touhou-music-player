@@ -28,12 +28,17 @@ public class ButtonAction {
         this.b = b;
     }
 
+    public ButtonAction(Button b, Text text) {
+        this(b);
+        this.text = text;
+    }
+
     public ButtonAction(Button b, int gameId, Stage s) {
         this(b);
         this.gameId = gameId;
     }
 
-    public ButtonAction(Button b, int gameId, int songId, Text text) {
+    public ButtonAction(Button b, int gameId, Text text, int songId) {
         this(b);
         this.gameId = gameId;
         this.songId = songId;
@@ -96,7 +101,7 @@ public class ButtonAction {
                 }
             } 
             catch (NullPointerException err) {
-                System.out.println("The app tried to pause music despite not having anything to pause");
+                err.printStackTrace();
             }
         });
     }
