@@ -177,6 +177,7 @@ public class ButtonAction {
      * @throws IOException
      */
     private void saveDirectory(File file, int gameId) throws IOException {
+        gameId += 6;
         String id = gameId < 10 ? "dir0" + gameId + ":" : "dir" + gameId + ":";
         String directoryPath = "info/dirs.dat";
 
